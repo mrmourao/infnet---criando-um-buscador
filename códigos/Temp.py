@@ -83,19 +83,21 @@ def main():
     
     log("starting process...")
     
-    path_files = 'C:\\git\\infnet-criando-um-buscador\\dados'
+    path_files = 'D:\\git\\infnet-criando-um-buscador\\dados'
     
     inverted_index = {}
     
-    docs = get_all_docs(path_files)
+    #docs = get_all_docs(path_files)
+    #docs = {"doc1":"Temer car bus driven travel bussines road","doc2":"Temer truck bus driven travel bussines highway"}
+    docs = {'d1': 'new new york times','d2': 'new york post','d3': 'los angeles times'}
     
-    key_docs = []
+    tf = {}
 
     log("concating all text of all docs in just one")
     all_text = ''
     for key, value in docs.items():
         all_text += value + " "
-        key_docs.append(key)
+        tf[key] = 0
 
     log("building all possible tokens")
     all_words = token_treated(all_text)
@@ -116,35 +118,47 @@ def main():
         # building tokens of document
         aw = token_treated(value)
         
-        # add the document on inverted index
+        # counting words of document
+        tf[key] =  len(aw)
+        
+        # adding the document on inverted index
         for w in aw:
             inverted_index[w].append(key)
+            
+        
 
+    
+    
     log("sorting the lists to build the df...")
-    ixs = sorted(key_docs)
-    cols = sorted(list(inverted_index.keys()))
+    ix_docs = sorted(list(tf.keys()))
+    col_tokens = sorted(list(inverted_index.keys()))
     
     log("building the idf's values...")
     idf = {}
     for key, value in inverted_index.items():
-        idf[key] = log2(len(key_docs) / float(len(value)))
-    
+        print(key,value)
+        idf["new"] = log2(len(ix_docs) / float(len(inverted_index["new"])))
+
     log("preparing the shape of df...")
-    shape = (len(ixs),len(cols))
+    shape = (len(ix_docs),len(col_tokens))
     zeros = np.zeros(shape, dtype=int)
     
     log("building df...")
-    df = pd.DataFrame(data=zeros,index=ixs,columns=cols)
+    df = pd.DataFrame(data=zeros,index=ix_docs,columns=col_tokens)
     
-    log("calculating the values of tf * idf...")
-    for i in ixs:
-        for j in cols:
-            fd = FreqDist(inverted_index[j])
-            df.loc[i,j] = fd[i] * float(idf[j])
+    log("calculating the values of tf and making rf * idf...")
+    for i in ix_docs: # all df rowns
+        for j in col_tokens: # all df columns 
+            fd = FreqDist(inverted_index[j]) # counting frequence
+            #df.loc[i,j] = (fd[i] / tf[i]) * float(idf[j])
+            df.loc[i,j] =  fd[i] * float(idf[j])
     
     log("end process...")
     
+    #df.to_csv("teste.csv")
     print(df.head())
+    
+    
 
 #------------------------------------------------------------------------------
 if __name__ == '__main__':

@@ -33,14 +33,16 @@ def token_treated(tx):
     return wf
 
 #------------------------------------------------------------------------------
-def query(all_tokens, text):
+def query(all_tokens,all_key_docs, text):
     words = token_treated(text)
     fd = FreqDist(words)
     res = {}
-    
+    res["weight"] = 0
     for w in set(words):
         calc = fd[w] / all_tokens[w]["qt_all_docs"] * all_tokens[w]["idf"]
         res[w] = calc
+        res["weight"] += calc ** 2
+    res["weight"] = sqrt(res["weight"])
     
     print(res)
 #------------------------------------------------------------------------------
@@ -77,16 +79,13 @@ def main():
             all_tokens[w][k_doc] = { "itf": itf}
             
             idf_tf = itf * all_tokens[w]["idf"]
-            cal = sqrt(idf_tf ** 2)
-            print(cal)
-            all_key_docs[k_doc]["weight"] += cal
-            #print(k_doc,w,all_key_docs[k_doc], itf * all_tokens[w]["idf"], cal)
-            #print(k_doc,w,idf_tf)
-            #sqrt(0.584^2 + 0.584^2 + 0.584^2)
-            #https://hk.saowen.com/a/60e5b899ed34ac7cd71649fb9c57135163ae949f555ae8e8889a294d794cc6c0
-    print(all_key_docs["d3"])
+            all_key_docs[k_doc]["weight"] += idf_tf ** 2
+        
+        all_key_docs[k_doc]["weight"] = sqrt(all_key_docs[k_doc]["weight"])
+    
+    
     text = 'new new times'
-    #query(all_tokens, text)
+    query(all_tokens,all_key_docs,text)
     #print(all_key_docs)
     #print(all_tokens)
     

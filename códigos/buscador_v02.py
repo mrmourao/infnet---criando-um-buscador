@@ -32,12 +32,25 @@ def token_treated(tx):
     return wf
 
 #------------------------------------------------------------------------------
+def query(all_tokens, text):
+    words = token_treated(text)
+    fd = FreqDist(words)
+    res = {}
+    
+    for w in set(words):
+        calc = fd[w] / all_tokens[w]["qt_all_docs"] * all_tokens[w]["idf"]
+        res[w] = calc
+    
+    print(res)
+#------------------------------------------------------------------------------
 def main():
     docs = {'d1': 'new york times','d2': 'new york post','d3': 'los angeles times'}
     
+    all_key_docs = {}
     all_text = ''
     for key, value in docs.items():
         all_text += value + " "
+        all_key_docs[key] = {"weight":0}
         
     all_words = token_treated(all_text)
     all_tokens = {}
@@ -50,27 +63,24 @@ def main():
             opt = {}
             opt["qt_all_docs"] = 1
             all_tokens[word] = opt
-            
+        
         all_tokens[word]["idf"] = log2(len(docs.keys()) / all_tokens[word]["qt_all_docs"])
         
-    all_text = ''
     
     for k_doc, v_doc in docs.items():
         words = token_treated(v_doc)
         fd = FreqDist(words)
-        
-        #for k_tk, v_tk in all_tokens.items():
-            
-        for w in words:
-            #print(k_doc,w, fd[w], len(words), fd[w] / float(len(words)))
-            all_tokens[word][k_doc] = fd[w] / float(len(words))
 
+        for w in set(words):
+            itf = fd[w] #/ float(len(words)) # comentado temporariamente para ajustar ao exemplo
+            all_tokens[w][k_doc] = { "itf": itf}
+            print(k_doc,w,all_key_docs[k_doc], itf * all_tokens[w]["idf"])
+            
     
-    #all_tokens["new"]["teste"] = 1245
-    #fd = FreqDist(all_tokens)
-    #print(all_words)
-    #    fd = FreqDist(all_words)
-    print(all_tokens["new"])
+    text = 'new new times'
+    #query(all_tokens, text)
+    #print(all_key_docs)
+    #print(all_tokens)
     
 #------------------------------------------------------------------------------
 if __name__ == '__main__':

@@ -80,50 +80,7 @@ def get_all_docs(path_files):
     return all_docs
 
 #------------------------------------------------------------------------------
-def query(all_tokens,all_key_docs, text):
-    words = token_treated(text)
-    fd = FreqDist(words)
-    res = {}
-    res["length"] = 0
-    
-    log("calculating 'length' of query ")
-    for w in set(words):
-        calc = fd[w] / all_tokens[w]["qt_all_docs"] * all_tokens[w]["idf"]
-        
-        res[w] = {"tf-idf": calc}
-        
-        res["length"] += calc ** 2
-    res["length"] = sqrt(res["length"])
-    
-    
-    log("calculating cosine")
-    cosSim = {}
-    for doc in all_key_docs.keys():
-        for word in set(words):
-            try:
-                try:
-                    cosSim[doc] += res[word]["tf-idf"] * all_tokens[word][doc]["tf-idf"]
-                except:
-                    cosSim[doc] = res[word]["tf-idf"] * all_tokens[word][doc]["tf-idf"]
-            except:
-                pass
-    
-    for doc in cosSim.keys():
-        cosSim[doc] = cosSim[doc] / (all_key_docs[doc]["length"] * res["length"])
-        
-    return cosSim
-#------------------------------------------------------------------------------
-def main():
-    
-    log("starting the process...")
-    
-    path_files = 'D:\\git\\infnet-criando-um-buscador\\dados'
-    
-    log("getting all documents...")
-    docs = get_all_docs(path_files)
-    
-    #used for test "cosine_tf_idf_example.pdf"
-    #docs = {'d1': 'new york times','d2': 'new york post','d3': 'los angeles times'}
+def get_cosine_similarity(docs,query):
     
     log("concatenating all text of all docs in just one")
     all_key_docs = {}
@@ -166,25 +123,101 @@ def main():
             all_key_docs[k_doc]["length"] += idf_tf ** 2
         
         all_key_docs[k_doc]["idf_tf"] = sqrt(all_key_docs[k_doc]["length"])
+        
+    words = token_treated(query)
+    fd = FreqDist(words)
+    res = {}
+    res["length"] = 0
+    
+    log("calculating 'length' of query ")
+    for w in set(words):
+        calc = fd[w] / all_tokens[w]["qt_all_docs"] * all_tokens[w]["idf"]
+        
+        res[w] = {"tf-idf": calc}
+        
+        res["length"] += calc ** 2
+    res["length"] = sqrt(res["length"])
     
     
+    log("calculating cosine")
+    cosSim = {}
+    for doc in all_key_docs.keys():
+        for word in set(words):
+            try:
+                try:
+                    cosSim[doc] += res[word]["tf-idf"] * all_tokens[word][doc]["tf-idf"]
+                except:
+                    cosSim[doc] = res[word]["tf-idf"] * all_tokens[word][doc]["tf-idf"]
+            except:
+                pass
     
+    for doc in cosSim.keys():
+        cosSim[doc] = cosSim[doc] / (all_key_docs[doc]["length"] * res["length"])
+        
+    #ordering the result of query
+    cosSim = [(k, cosSim[k]) for k in sorted(cosSim, key=cosSim.get, reverse=True)]
+    
+    #putting the result in a dataframe
+    df = pd.DataFrame(data=cosSim, columns=["Document","Order"])
+        
+    return df
+#------------------------------------------------------------------------------
+
+def get_jaccard_similarity(docs, query):
+    jacSim = {}
+    words_query = set(token_treated(query))
+    
+    log("calculating jaccard")
+    for key, value in docs.items():
+        words_docs = set(token_treated(value))
+        intersect = words_query.intersection(words_docs)
+        union = words_query.union(words_docs)
+        
+        jacSim[key] = len(intersect)/ float(len(union))
+    
+    #ordering the result of query
+    jacSim = [(k, jacSim[k]) for k in sorted(jacSim, key=jacSim.get, reverse=True)]
+    
+    #putting the result in a dataframe
+    df = pd.DataFrame(data=jacSim, columns=["Document","Order"])
+    
+    return df
+
+#------------------------------------------------------------------------------
+
+def main():
+    
+    log("starting the process...")
+    
+    path_files = 'D:\\git\\infnet-criando-um-buscador\\dados'
+    
+    log("getting all documents...")
+    docs = get_all_docs(path_files)
+    
+    #used for test "cosine_tf_idf_example.pdf"
+    #docs = {'d1': 'new york times','d2': 'new york post','d3': 'los angeles times'}
+        
     log("testing query")
         
     #put here the text of consult
-    text = 'new new times'
+    query = 'new new times'
     
-    
-    result = query(all_tokens,all_key_docs,text)
-    
-    #ordering the result of query
-    result = [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)]
-    
-    #putting the result in a dataframe
-    df = pd.DataFrame(data=result, columns=["Document","Order"])
     
     log("printing the result")
-    print(df)
+    
+    
+    cosine_similarity = get_cosine_similarity(docs,query)
+    
+    print('-'*50)
+    print(cosine_similarity.head(10))
+    print('-'*50)
+    
+    jaccard_similarity = get_jaccard_similarity(docs,query)
+    
+    print('-'*50)
+    print(jaccard_similarity.head(10))
+    print('-'*50)
+    
     log("end process...")
     
     

@@ -6,7 +6,7 @@ from nltk.probability   import FreqDist
 
 from os       import listdir
 from os.path  import isfile, join
-from math     import log2, sqrt
+from math     import log2, sqrt, pow
 from datetime import datetime as dt
 
 import re
@@ -185,6 +185,37 @@ def get_jaccard_similarity(docs, query):
 
 #------------------------------------------------------------------------------
 
+def get_euclidean_distance_similarity(docs, query):
+    log("calculating euclidean distance")
+    eucSim = {}
+    words_query = token_treated(query)
+    fd = FreqDist(words_query)
+    
+    vt_query = {}
+    
+    for w in set(words_query):
+        vt_query[w] = fd[w]
+    
+    for key, value in docs.items():
+        words_doc = token_treated(value)
+        fd = FreqDist(words_doc)
+        
+        soma = 0.0
+        for k, v in vt_query.items():
+            soma += pow(v - fd[k], 2)
+        eucSim[key] = sqrt(soma)
+        
+    
+    #ordering the result of query
+    eucSim = [(k, eucSim[k]) for k in sorted(eucSim, key=eucSim.get, reverse=False)]
+    
+    #putting the result in a dataframe
+    df = pd.DataFrame(data=eucSim, columns=["Document","Order"])
+    
+    return df
+   
+#------------------------------------------------------------------------------
+
 def main():
     
     log("starting the process...")
@@ -218,6 +249,13 @@ def main():
     print(jaccard_similarity.head(10))
     print('-'*50)
     
+    euclidean_similarity = get_euclidean_distance_similarity(docs,query)
+    
+    print('-'*50)
+    print(euclidean_similarity.head(10))
+    print('-'*50)
+    
+         
     log("end process...")
     
     

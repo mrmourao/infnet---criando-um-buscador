@@ -3,6 +3,7 @@ from nltk.tokenize      import word_tokenize
 from nltk.stem.porter   import PorterStemmer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.probability   import FreqDist
+from scipy.stats        import pearsonr
 
 from os       import listdir
 from os.path  import isfile, join
@@ -11,6 +12,9 @@ from datetime import datetime as dt
 
 import re
 import pandas as pd
+import numpy as np
+
+
 
 #------------------------------------------------------------------------------
 
@@ -216,6 +220,41 @@ def get_euclidean_distance_similarity(docs, query):
    
 #------------------------------------------------------------------------------
 
+def get_pearson_similarity(docs, query):
+    log("calculating pearson")
+    pearSim = {}
+    words_query = token_treated(query)
+    fd = FreqDist(words_query)
+    
+    vt_query = {}
+    vt_doc = {}
+    
+    for w in set(words_query):
+        vt_query[w] = fd[w]
+    
+    for key, value in docs.items():
+        words_doc = token_treated(value)
+        fd = FreqDist(words_doc)
+        
+        for k, v in vt_query.items():
+            vt_doc[k] = fd[k]
+            
+        corr, p_value = pearsonr(list(vt_query.values()), list(vt_doc.values()))
+        print(p_value)
+        if not np.isnan(corr):
+            pearSim[key] = corr
+        
+    
+    #ordering the result of query
+    pearSim = [(k, pearSim[k]) for k in sorted(pearSim, key=pearSim.get, reverse=True)]
+    
+    #putting the result in a dataframe
+    df = pd.DataFrame(data=pearSim, columns=["Document","Order"])
+    
+    return df
+
+#------------------------------------------------------------------------------
+
 def main():
     
     log("starting the process...")
@@ -236,7 +275,6 @@ def main():
     
     log("printing the result")
     
-    
     cosine_similarity = get_cosine_similarity(docs,query)
     
     print('-'*50)
@@ -255,6 +293,11 @@ def main():
     print(euclidean_similarity.head(10))
     print('-'*50)
     
+    pearson_similarity = get_pearson_similarity(docs,query)
+    
+    print('-'*50)
+    print(pearson_similarity.head(10))
+    print('-'*50)
          
     log("end process...")
     

@@ -1,1 +1,6 @@
 /bkp
+/codes/search_engine_v02/indexer/indexer.log
+/codes/search_engine_v02/invertedIndex/inverted_index.log
+/codes/search_engine_v02/invertedIndex/InvertedIndex.csv
+/codes/search_engine_v02/indexer/indexer.csv
+/codes/search_engine_v02/*.log

@@ -30,10 +30,18 @@ class IndexerGenerator():
         
         log.info('Processing Indexer Generator Module...')
         
-        log.info("loading the inverted index")
-        inverted_index = InvertedIndexGenerator.getInvertedIndex(join(PATH,"InvertedIndex","InvertedIndex.csv"))
+        log.info("Reading the configuration file")
+        config = IndexerGenerator.readConfig(join(PATH,"indexer","index.cfg"))
         
-        log.info("create an auxiliary dictionary to help with calculations of tf-idf")
+        log.info("Loading the inverted index")
+        ini = time.time()
+        inverted_index = InvertedIndexGenerator.getInvertedIndex(PATH+config["LEIA"])
+        log.info('%s records read succesfully.' % str(len(inverted_index)))
+        log.info('Load operation finished with %s' % str(time.time()-ini))
+        
+        
+        log.info("Creating an auxiliary dictionary to help with calculations of tf-idf")
+        ini = time.time()
         all_docs = {}
         for termo, docs in inverted_index.items():
             for doc in docs:
@@ -49,10 +57,13 @@ class IndexerGenerator():
                         all_docs[doc]["qte_termos_in_doc"] = 1
                         all_docs[doc]["termos"] = {}
                         all_docs[doc]["termos"][termo] = {"qte_in_doc": 1}
-                        
+        
+        log.info('Create operation finished with %s' % str(time.time()-ini))                
+        
         indexer = {}
         
         log.info("Calculating values of tf * idf")
+        ini = time.time()
         for termo, docs in inverted_index.items():
             
             # log2( total of documents / total of documents that the term appears)
@@ -65,20 +76,21 @@ class IndexerGenerator():
                 tf = all_docs[doc]["termos"][termo]["qte_in_doc"] / float(all_docs[doc]["qte_termos_in_doc"])
                 
                 tf_ifd = 1 + log2(tf)*log2(idf)
-                indexer[termo][doc] = {"tf_ifd":tf_ifd}
-                 
+                indexer[termo][doc] = tf_ifd
+        
+        log.info('End of calculate tf-idf. Total of %s elapsed.' % str(time.time()-ini))         
         
         log.info('Writing Indexer on file...')
         ini = time.time()
-        IndexerGenerator.saveIndexer(join(PATH,"indexer","indexer.csv"),indexer)
+        IndexerGenerator.saveIndexer(PATH+config["ESCREVA"],indexer)
         
-        timeElapsed = time.time()-ini
-        log.info('Write operation finished with %s' % str(timeElapsed))
+        log.info('%s records created successfully.' % str(len(indexer)))
+        log.info('Write operation finished with %s' % str(time.time()-ini))
         
         end = time.time() - begin
         log.info('End of Indexer Generator Module. Total of %s elapsed.' % str(end))
         
-    #--------------------------------------------------------------------------
+#------------------------------------------------------------------------------
     
     def saveIndexer(filepath, indexer):
         
@@ -86,3 +98,16 @@ class IndexerGenerator():
         for key, value in indexer.items():
             file.write(key +";%s\n" % value)
         file.close()
+
+#------------------------------------------------------------------------------           
+    
+    def readConfig(filepath):
+        
+        file = open(join(PATH,filepath))
+        
+        dict_config = {}
+        for line in file:
+            key, value = line.replace(" ","").replace("\n","").split("=")
+            dict_config[key] = value
+            
+        return dict_config

@@ -18,8 +18,7 @@ import csv
 import re
 import ast
 
-from os       import listdir
-from os.path  import isfile, join, dirname, abspath
+from os.path  import join, dirname, abspath
 
 #-----------------------------------------------------------------------------#    
 # Globals variables
@@ -40,25 +39,33 @@ class InvertedIndexGenerator():
         Log.setLog(__name__, logPath)
         log = logging.getLogger(__name__)
         
-        log.info('Processing Inverted Index Generator Module...')
+        log.info('Processing inverted index generator module...')
         
-        inverted_index = {}
-    
-        docs = InvertedIndexGenerator.get_all_docs(join(PATH,"data"))
+        log.info("Reading the configuration file")
+        config = InvertedIndexGenerator.readConfig(join(PATH,"invertedIndex","gli.cfg"))
+            
+        log.info("Getting all documents from xml files")
+        docs, meanTimeXML = InvertedIndexGenerator.get_all_docs(config["LEIA"])
+        log.info('XML reading operation finished with %s of time average.' % str(meanTimeXML))
         
-        log.info("concating all text of all docs in just one")
+        
+        ini = time.time()
+        log.info("Building the inverted index")
+        
+        log.info("Concating all text of all docs in just one")
         all_text = ''
         for key, value in docs.items():
             all_text += value + " "
        
-        log.info("building all possible tokens")
+        log.info("Building all possible tokens")
         all_words = InvertedIndexGenerator.token_treated(all_text)
     
-        log.info("building all possible keys")
+        log.info("Building all possible keys")
+        inverted_index = {}
         for w in all_words:
             inverted_index[w] = []
     
-        log.info("listing all docs and append to de main dict...")
+        log.info("Listing all docs and append to de main dict...")
         for key, value in docs.items():
             
             # building tokens of document
@@ -68,15 +75,17 @@ class InvertedIndexGenerator():
             for w in aw:
                 inverted_index[w].append(key)
         
-        log.info('Writing Inverted Index on file...')
+        log.info('Inverted index finished with %s of time average.' % str((time.time()-ini) / float(len(config["LEIA"]))))
+        
+        log.info('Writing inverted index on file...')
         ini = time.time()
-        InvertedIndexGenerator.saveInvertedIndex(join(PATH,"InvertedIndex","InvertedIndex.csv"),inverted_index)
+        InvertedIndexGenerator.saveInvertedIndex(PATH+config["ESCREVA"],inverted_index)
         
         timeElapsed = time.time()-ini
         log.info('Write operation finished with %s' % str(timeElapsed))
         
         end = time.time() - begin
-        log.info('End of Inverted Index Generator Module. Total of %s elapsed.' % str(end))
+        log.info('End of inverted index generator module. Total of %s elapsed.' % str(end))
     
     #--------------------------------------------------------------------------
     def readXML(filename):
@@ -106,17 +115,18 @@ class InvertedIndexGenerator():
     
     #--------------------------------------------------------------------------
     
-    def get_all_docs(path_files):
+    def get_all_docs(list_of_files):
+        meanTimeXML = 0
     
-        all_files = [f for f in listdir(path_files) if isfile(join(path_files, f))]
-        
         all_docs = {}
         
-        for file in all_files:
-            dict_xml = InvertedIndexGenerator.readXML(join(path_files,file))
+        for file in list_of_files:
+            ini = time.time()
+            dict_xml = InvertedIndexGenerator.readXML(PATH+file)
             all_docs.update(dict_xml)
-            
-        return all_docs
+            meanTimeXML+=time.time()-ini
+                                  
+        return all_docs, (meanTimeXML / float(len(list_of_files)))
     
     #--------------------------------------------------------------------------
     def token_treated(tx):
@@ -170,5 +180,22 @@ class InvertedIndexGenerator():
     
     #--------------------------------------------------------------------------           
     
-    
+    def readConfig(filepath):
+        
+        file = open(join(PATH,filepath))
+        
+        dict_config = {}
+        for line in file:
+            key, value = line.replace(" ","").replace("\n","").split("=")
+            
+            if key == 'LEIA':
+                try:
+                    dict_config[key].append(value)
+                except KeyError:
+                    dict_config[key] = [value]
+            
+            if key == 'ESCREVA':
+                dict_config[key] = value
+            
+        return dict_config
         

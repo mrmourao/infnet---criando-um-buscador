@@ -3,3 +3,4 @@ http://www.nltk.org/book/ch02.html
 http://conteudo.icmc.usp.br/pessoas/taspardo/sucinto/cstnews.html
 http://www.ebizmba.com/articles/search-engines
 http://www.nltk.org/howto/stem.html
+https://sae.infnet.edu.br/moodle/course/view.php?id=6945

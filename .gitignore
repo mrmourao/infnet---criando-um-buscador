@@ -4,3 +4,6 @@
 /codes/search_engine_v02/invertedIndex/InvertedIndex.csv
 /codes/search_engine_v02/indexer/indexer.csv
 /codes/search_engine_v02/*.log
+/codes/search_engine_v02/__pycache__
+/codes/search_engine_v02/indexer/indexer_out.csv
+/codes/search_engine_v02/invertedIndex/inverted_index_out.csv

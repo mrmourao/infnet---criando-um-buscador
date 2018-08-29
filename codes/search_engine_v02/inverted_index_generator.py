@@ -1,16 +1,8 @@
 # -*- coding: utf-8 -*-
 """ @author: Marcos Romero Mourão """
 
-#-----------------------------------------------------------------------------#    
+#------------------------------------------------------------------------------    
 # Import libraries
-
-from nltk.corpus        import stopwords
-from nltk.tokenize      import word_tokenize
-from nltk.stem.porter   import PorterStemmer
-from nltk.stem.snowball import SnowballStemmer
-
-from xml.dom.minidom import parse
-from log_factory import Log
 
 import logging
 import time
@@ -18,16 +10,23 @@ import csv
 import re
 import ast
 
-from os.path  import join, dirname, abspath
+from nltk.stem.snowball import SnowballStemmer
+from nltk.stem.porter   import PorterStemmer
+from nltk.corpus        import stopwords
+from nltk.tokenize      import word_tokenize
+from xml.dom.minidom    import parse
+from log_factory        import Log
+from os.path            import join, dirname, abspath
 
-#-----------------------------------------------------------------------------#    
+#------------------------------------------------------------------------------    
 # Globals variables
+
 PATH = dirname(abspath(__file__))
 log = ''
 
+#------------------------------------------------------------------------------
+
 class InvertedIndexGenerator():
-    
-    #--------------------------------------------------------------------------  
     
     def process():
         global log
@@ -87,7 +86,8 @@ class InvertedIndexGenerator():
         end = time.time() - begin
         log.info('End of inverted index generator module. Total of %s elapsed.' % str(end))
     
-    #--------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
     def readXML(filename):
         log.info('Reading '+filename+' file')
         
@@ -113,7 +113,7 @@ class InvertedIndexGenerator():
         
         return dictionary
     
-    #--------------------------------------------------------------------------
+#------------------------------------------------------------------------------
     
     def get_all_docs(list_of_files):
         meanTimeXML = 0
@@ -128,7 +128,8 @@ class InvertedIndexGenerator():
                                   
         return all_docs, (meanTimeXML / float(len(list_of_files)))
     
-    #--------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
     def token_treated(tx):
         sw = set(stopwords.words('english'))
         sb = SnowballStemmer("english")
@@ -158,7 +159,7 @@ class InvertedIndexGenerator():
        
         return wf
     
-    #--------------------------------------------------------------------------
+#------------------------------------------------------------------------------
     
     def saveInvertedIndex(filepath, invertedIndex):
         
@@ -167,7 +168,7 @@ class InvertedIndexGenerator():
             file.write(key +";%s\n" % value)
         file.close()
         
-    #-------------------------------------------------------------------------- 
+#------------------------------------------------------------------------------
     
     def getInvertedIndex(filepath):
         dictionary = {}
@@ -178,7 +179,7 @@ class InvertedIndexGenerator():
         
         return dictionary
     
-    #--------------------------------------------------------------------------           
+#------------------------------------------------------------------------------
     
     def readConfig(filepath):
         
@@ -198,4 +199,5 @@ class InvertedIndexGenerator():
                 dict_config[key] = value
             
         return dict_config
-        
+
+#------------------------------------------------------------------------------        

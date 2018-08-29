@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Aug 25 10:08:02 2018
+""" @author: Marcos Romero Mourão """
 
-@author: marcos.romero
-"""
+#------------------------------------------------------------------------------    
+# Import libraries
+
 import logging
+
+#------------------------------------------------------------------------------    
 
 class Log():
     

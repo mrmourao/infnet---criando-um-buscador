@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 """ @author: Marcos Romero Mourão """
 
-#-----------------------------------------------------------------------------#    
+#------------------------------------------------------------------------------    
 # Import libraries
-from os.path import dirname, abspath, join
-from log_factory import Log
 
 import logging
 import time
-from inverted_index_generator import InvertedIndexGenerator
-from indexer_generator import IndexerGenerator
 
+from inverted_index_generator  import InvertedIndexGenerator
+from query_processor_generator import QueryProcessorGenerator
+from indexer_generator         import IndexerGenerator
+from log_factory               import Log
+from os.path                   import dirname, abspath, join
 
-#-----------------------------------------------------------------------------#    
+#------------------------------------------------------------------------------    
 # Globals variables
 PATH = dirname(abspath(__file__))
 
-#-----------------------------------------------------------------------------#    
+#------------------------------------------------------------------------------    
 # Main method
 def main():
     # starting the time of process
@@ -53,7 +54,7 @@ def main():
         log.info("Calling query processor generator ")
         ini = time.time()
         
-        print("QueryProcessor")
+        QueryProcessorGenerator.process()
         
         log.info('End of query processor generator. Total of %s elapsed.' % str(time.time()-ini))
         
@@ -68,7 +69,7 @@ def main():
     end = time.time() - begin
     log.info('End of system. Total of %s elapsed.' % str(end))
     
-#-----------------------------------------------------------------------------#    
+#------------------------------------------------------------------------------    
 # Auxiliary method
 
 def readConfig(filepath):
@@ -82,7 +83,10 @@ def readConfig(filepath):
            
     return dic
 
-#-----------------------------------------------------------------------------#    
+#------------------------------------------------------------------------------    
 # Start main method
+
 if __name__ == "__main__":
     main()
+
+#------------------------------------------------------------------------------

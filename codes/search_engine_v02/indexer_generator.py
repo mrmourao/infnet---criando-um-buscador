@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Aug 25 10:11:13 2018
+""" @author: Marcos Romero Mourão """
 
-@author: marcos.romero
-"""
-from inverted_index_generator import InvertedIndexGenerator
-from os.path  import dirname, abspath, join
-from math     import log2
+#------------------------------------------------------------------------------    
+# Import libraries
 
-from log_factory import Log
 import logging
 import time
 
+from inverted_index_generator import InvertedIndexGenerator
+from log_factory              import Log
+from os.path                  import dirname, abspath, join
+from math                     import log2
+
+#------------------------------------------------------------------------------    
 #globals
+
 PATH = dirname(abspath(__file__))
 log = ''
+
+#------------------------------------------------------------------------------    
 
 class IndexerGenerator():
     
@@ -28,7 +32,7 @@ class IndexerGenerator():
         Log.setLog(__name__, logPath)
         log = logging.getLogger(__name__)
         
-        log.info('Processing Indexer Generator Module...')
+        log.info('Processing indexer generator Module...')
         
         log.info("Reading the configuration file")
         config = IndexerGenerator.readConfig(join(PATH,"indexer","index.cfg"))
@@ -88,7 +92,7 @@ class IndexerGenerator():
         log.info('Write operation finished with %s' % str(time.time()-ini))
         
         end = time.time() - begin
-        log.info('End of Indexer Generator Module. Total of %s elapsed.' % str(end))
+        log.info('End of indexer generator module. Total of %s elapsed.' % str(end))
         
 #------------------------------------------------------------------------------
     
@@ -111,3 +115,5 @@ class IndexerGenerator():
             dict_config[key] = value
             
         return dict_config
+
+#------------------------------------------------------------------------------

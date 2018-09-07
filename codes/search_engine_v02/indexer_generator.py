@@ -6,15 +6,16 @@
 
 import logging
 import time
+import csv
+import ast
 
 from inverted_index_generator import InvertedIndexGenerator
-from log_factory              import Log
+from utils.log_factory        import Log
 from os.path                  import dirname, abspath, join
 from math                     import log2
 
 #------------------------------------------------------------------------------    
-#globals
-
+# Globals variables
 PATH = dirname(abspath(__file__))
 log = ''
 
@@ -32,7 +33,7 @@ class IndexerGenerator():
         Log.setLog(__name__, logPath)
         log = logging.getLogger(__name__)
         
-        log.info('Processing indexer generator Module...')
+        log.info('Processing indexer generator module...')
         
         log.info("Reading the configuration file")
         config = IndexerGenerator.readConfig(join(PATH,"indexer","index.cfg"))
@@ -72,15 +73,13 @@ class IndexerGenerator():
             
             # log2( total of documents / total of documents that the term appears)
             idf = log2(len(all_docs.keys()) / float(len(set(docs))))
-             
             indexer[termo] = {}
+            indexer[termo]["idf"] = idf
             for doc in docs:
-                
                 # number of times the terms appear in the document / total document terms
                 tf = all_docs[doc]["termos"][termo]["qte_in_doc"] / float(all_docs[doc]["qte_termos_in_doc"])
-                
-                tf_ifd = 1 + log2(tf)*log2(idf)
-                indexer[termo][doc] = tf_ifd
+                tf_idf = 1 + log2(tf)*log2(idf)
+                indexer[termo][doc] = tf_idf
         
         log.info('End of calculate tf-idf. Total of %s elapsed.' % str(time.time()-ini))         
         
@@ -116,4 +115,15 @@ class IndexerGenerator():
             
         return dict_config
 
+#------------------------------------------------------------------------------
+    
+    def getIndexer(filepath):
+        dictionary = {}
+        with open(filepath, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=';')
+            for row in spamreader:
+                dictionary[row[0]] = ast.literal_eval(row[1])
+        
+        return dictionary
+    
 #------------------------------------------------------------------------------

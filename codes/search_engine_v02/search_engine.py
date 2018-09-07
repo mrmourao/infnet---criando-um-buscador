@@ -7,10 +7,11 @@
 import logging
 import time
 
-from inverted_index_generator  import InvertedIndexGenerator
 from query_processor_generator import QueryProcessorGenerator
+from inverted_index_generator  import InvertedIndexGenerator
 from indexer_generator         import IndexerGenerator
-from log_factory               import Log
+from searcher_generator        import SearcherGenerator
+from utils.log_factory         import Log
 from os.path                   import dirname, abspath, join
 
 #------------------------------------------------------------------------------    
@@ -20,7 +21,8 @@ PATH = dirname(abspath(__file__))
 #------------------------------------------------------------------------------    
 # Main method
 def main():
-    # starting the time of process
+    
+    # starting the time of application
     begin = time.time()
     
     # starting log
@@ -28,7 +30,6 @@ def main():
     Log.setLog(__name__, logPath)
     log = logging.getLogger(__name__)
     log.info("System started")
-    
     
     log.info("Reading the configuration file")
     # In this cfg you can choose each module will be run
@@ -62,7 +63,7 @@ def main():
         log.info("Calling searcher generator ")
         ini = time.time()
         
-        print("Searcher")
+        SearcherGenerator.process()
         
         log.info('End of searcher generator. Total of %s elapsed.' % str(time.time()-ini))
         

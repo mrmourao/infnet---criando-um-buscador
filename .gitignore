@@ -10,3 +10,4 @@
 /codes/search_engine_v02/queryProcessor/consulta.csv
 /codes/search_engine_v02/queryProcessor/resultados.csv
 /codes/search_engine_v02/queryProcessor/query_processor.log
+/codes/search_engine_v02/utils/__pycache__

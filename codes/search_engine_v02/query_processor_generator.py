@@ -7,14 +7,14 @@
 import unidecode
 import logging
 import time
+import csv
 
-from xml.dom.minidom import parse
-from log_factory     import Log
-from os.path         import dirname, abspath, join
+from utils.log_factory import Log
+from xml.dom.minidom   import parse
+from os.path           import dirname, abspath, join
 
 #------------------------------------------------------------------------------
-#globals
-
+# Globals variables
 PATH = dirname(abspath(__file__))
 log = ''
 
@@ -134,7 +134,6 @@ class QueryProcessorGenerator():
         meanTimeXML = 0
     
         all_queries = {}
-        
         for file in list_of_files:
             ini = time.time()
             dict_xml = QueryProcessorGenerator.readXML(PATH+file)
@@ -143,4 +142,16 @@ class QueryProcessorGenerator():
                                   
         return all_queries, (meanTimeXML / float(len(list_of_files)))
     
-#--------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+    
+    def getQueryFile(filepath):
+        
+        dictionary = {}
+        with open(filepath, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=';')
+            for row in spamreader:
+                dictionary[row[0]] = row[1]
+        
+        return dictionary
+    
+#------------------------------------------------------------------------------

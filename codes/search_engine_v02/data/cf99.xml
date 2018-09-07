@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<FILE>
+	<RECORD>
+		<RECORDNUM>0001</RECORDNUM>
+		<ABSTRACT>new york times</ABSTRACT>
+	</RECORD>
+	<RECORD>
+		<RECORDNUM>0002</RECORDNUM>
+		<ABSTRACT>new york post</ABSTRACT>
+	</RECORD>
+	<RECORD>
+		<RECORDNUM>0003</RECORDNUM>
+		<ABSTRACT>los angeles times</ABSTRACT>
+	</RECORD>
+</FILE>

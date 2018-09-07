@@ -7,20 +7,15 @@
 import logging
 import time
 import csv
-import re
 import ast
 
-from nltk.stem.snowball import SnowballStemmer
-from nltk.stem.porter   import PorterStemmer
-from nltk.corpus        import stopwords
-from nltk.tokenize      import word_tokenize
-from xml.dom.minidom    import parse
-from log_factory        import Log
-from os.path            import join, dirname, abspath
+from utils.text_treatment import Text
+from utils.log_factory    import Log
+from xml.dom.minidom      import parse
+from os.path              import join, dirname, abspath
 
 #------------------------------------------------------------------------------    
 # Globals variables
-
 PATH = dirname(abspath(__file__))
 log = ''
 
@@ -57,7 +52,7 @@ class InvertedIndexGenerator():
             all_text += value + " "
        
         log.info("Building all possible tokens")
-        all_words = InvertedIndexGenerator.token_treated(all_text)
+        all_words = Text.token_treated(all_text)
     
         log.info("Building all possible keys")
         inverted_index = {}
@@ -68,7 +63,7 @@ class InvertedIndexGenerator():
         for key, value in docs.items():
             
             # building tokens of document
-            aw = InvertedIndexGenerator.token_treated(value)
+            aw = Text.token_treated(value)
             
             # add the document on inverted index
             for w in aw:
@@ -127,37 +122,6 @@ class InvertedIndexGenerator():
             meanTimeXML+=time.time()-ini
                                   
         return all_docs, (meanTimeXML / float(len(list_of_files)))
-    
-#------------------------------------------------------------------------------
-
-    def token_treated(tx):
-        sw = set(stopwords.words('english'))
-        sb = SnowballStemmer("english")
-        ps = PorterStemmer()
-        
-        # removing all characters different of a-zA-Z and keeping '-' for compound words
-        tx = re.sub('[^a-zA-Z\-]',' ',tx)
-        
-        words = word_tokenize(tx)
-    
-        wf = []
-        # removing stopwords and applying stemming
-        for w in words:
-            
-            # removing words with less of 2 characters
-            if len(w.replace("-","")) < 3:
-                continue
-            
-            w = w.lstrip( "-" )
-            w = w.rstrip( "-" )
-            
-            w = sb.stem(w)
-            w = ps.stem(w)
-            
-            if w not in sw:
-                wf.append(w)
-       
-        return wf
     
 #------------------------------------------------------------------------------
     

@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!DOCTYPE FILEQUERY SYSTEM "cfcquery-2.dtd">
+<FILEQUERY>
+	<QUERY>
+		<QueryNumber>00001</QueryNumber>
+		<QueryText>What are the effects of calcium on the physical properties of mucus
+   from CF patients? 
+</QueryText>
+		<Results>00034</Results>
+		<Records>
+			<Item score="1222">139</Item>
+			<Item score="2211">151</Item>
+			<Item score="0001">166</Item>
+			<Item score="0001">311</Item>
+			<Item score="1010">370</Item>
+			<Item score="0001">392</Item>
+			<Item score="0001">439</Item>
+			<Item score="0011">440</Item>
+			<Item score="2122">441</Item>
+			<Item score="0100">454</Item>
+			<Item score="1121">461</Item>
+			<Item score="0002">502</Item>
+			<Item score="1000">503</Item>
+			<Item score="0001">505</Item>
+			<Item score="1010">520</Item>
+			<Item score="0001">522</Item>
+			<Item score="1011">526</Item>
+			<Item score="1001">527</Item>
+			<Item score="2222">533</Item>
+			<Item score="1000">593</Item>
+			<Item score="0001">619</Item>
+			<Item score="0100">737</Item>
+			<Item score="0100">742</Item>
+			<Item score="0001">789</Item>
+			<Item score="0010">827</Item>
+			<Item score="0001">835</Item>
+			<Item score="0001">861</Item>
+			<Item score="1121">875</Item>
+			<Item score="0001">891</Item>
+			<Item score="1010">921</Item>
+			<Item score="1010">922</Item>
+			<Item score="0100">1175</Item>
+			<Item score="0001">1185</Item>
+			<Item score="0001">1222</Item>
+		</Records>
+	</QUERY>
+	<QUERY>
+		<QueryNumber>00002</QueryNumber>
+		<QueryText>Can one distinguish between the effects of mucus hypersecretion and
+   infection on the submucosal glands of the respiratory tract in CF?
+</QueryText>
+		<Results>00007</Results>
+		<Records>
+			<Item score="1000">169</Item>
+			<Item score="1001">434</Item>
+			<Item score="0100">454</Item>
+			<Item score="1000">498</Item>
+			<Item score="1000">499</Item>
+			<Item score="0002">592</Item>
+			<Item score="1011">875</Item>
+		</Records>
+	</QUERY>
+	<QUERY>
+		<QueryNumber>00003</QueryNumber>
+		<QueryText>How are salivary glycoproteins from CF patients different from those of
+   normal subjects?
+</QueryText>
+		<Results>00043</Results>
+		<Records>
+			<Item score="1000">23</Item>
+			<Item score="0010">40</Item>
+			<Item score="2122">139</Item>
+			<Item score="0001">190</Item>
+			<Item score="0001">221</Item>
+			<Item score="0001">246</Item>
+			<Item score="1000">309</Item>
+			<Item score="0011">311</Item>
+			<Item score="0001">325</Item>
+			<Item score="0010">345</Item>
+			<Item score="0010">347</Item>
+			<Item score="0010">356</Item>
+			<Item score="1001">370</Item>
+			<Item score="0001">374</Item>
+			<Item score="2221">375</Item>
+			<Item score="0001">439</Item>
+			<Item score="1120">440</Item>
+			<Item score="1220">454</Item>
+			<Item score="1000">515</Item>
+			<Item score="0010">520</Item>
+			<Item score="0010">524</Item>
+			<Item score="1010">526</Item>
+			<Item score="1220">527</Item>
+			<Item score="0001">533</Item>
+			<Item score="0010">535</Item>
+			<Item score="0010">560</Item>
+			<Item score="0001">561</Item>
+			<Item score="0010">571</Item>
+			<Item score="0010">584</Item>
+			<Item score="0002">604</Item>
+			<Item score="0010">623</Item>
+			<Item score="2222">633</Item>
+			<Item score="1000">733</Item>
+			<Item score="1010">742</Item>
+			<Item score="0100">854</Item>
+			<Item score="2112">856</Item>
+			<Item score="0010">950</Item>
+			<Item score="0001">967</Item>
+			<Item score="1111">1144</Item>
+			<Item score="0001">1161</Item>
+			<Item score="1000">1172</Item>
+			<Item score="0001">1175</Item>
+			<Item score="0002">1196</Item>
+		</Records>
+	</QUERY>
+</FILEQUERY>

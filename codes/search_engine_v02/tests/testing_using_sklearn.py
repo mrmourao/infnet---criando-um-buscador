@@ -32,6 +32,10 @@ class Test():
         p_queries = p_queries.replace("tests\\","")
         queries = Test.getQueryFile(p_queries)
         
+        p_results = PATH+"\\queryProcessor\\resultados.csv"
+        p_results = p_results.replace("tests\\","")
+        p_results = Test.getQueryFile(p_results)
+        
         
         documents = list(docs.values())
         
@@ -56,7 +60,7 @@ class Test():
             df = pd.DataFrame(data=resultado, columns=["Document","Order"])
             
             filepath = PATH+"\\resultados.csv"
-            Test.saveResult(filepath,query, df)
+            Test.saveResult(filepath,query, df,p_results)
             documents.pop(0)
             
         
@@ -152,11 +156,20 @@ class Test():
 
 #------------------------------------------------------------------------------     
 
-    def saveResult(filepath,num_query, df):
+    def saveResult(filepath,num_query, df,results):
         file = open(filepath, 'a')
+        limit = len(results[num_query])
+        list_result = []
         
         for key, obj in df.iterrows():
-            file.write(num_query +";%s\n" % [key+1,obj.Document,obj.Order])
+            
+            list_result.append((obj.Document,obj.Order))
+            if(limit > 0):
+                limit -= 1
+            else:
+                break
+
+        file.write(num_query +";%s\n" % list_result)
         file.close()
 
 #------------------------------------------------------------------------------ 
